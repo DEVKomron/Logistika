@@ -1,0 +1,230 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  superAdmin
+  user
+  driver
+}
+
+enum PayerEnum {
+  SENDER
+  RECEIVER
+  SPLIT
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum PaymentMethod {
+  CARD
+  CASH
+  TRANSFER
+}
+
+model User {
+  id                   Int         @id @default(autoincrement())
+  phone_number         String
+  first_name           String
+  last_name            String
+  email                String      @unique
+  tg_link              String
+  is_active            Boolean
+  role                 Role?       @default(user)
+  hashed_password      String
+  hashed_refresh_token String?
+  created_at           DateTime    @default(now())
+  driver               Driver[]
+  cargo                Cargo[]
+  raiting              Rating[]
+  order                Order[]
+  reviews              Reviews[]
+  payment              PayerEnum[]
+
+  @@map("user")
+}
+
+model Driver {
+  id                       Int               @id @default(autoincrement())
+  userId                   Int
+  rating                   Float
+  status                   Boolean
+  vehice_number            String
+  experience_year          Int
+  region                   String
+  is_verified              Boolean
+  driver_lisence_front     String
+  driver_lisence_back      String
+  technical_passport_front String
+  technical_passport_back  String
+  created_at               DateTime          @default(now())
+  activation_link Boolean  @default(false)
+   link        String? 
+  User                     User              @relation(fields: [userId], references: [id])
+  notification             Notification[]
+  rewiews                  Reviews[]
+  order                    Order[]
+  transportDriver          TransportDriver[]
+  raiting                  Rating[]
+
+  @@map("driver")
+}
+
+model Cargo {
+  id                 Int            @id @default(autoincrement())
+  userId             Int
+  netWeight          Float
+  dimensions         Int
+  price              Float
+  roundTrip          Boolean
+  partialPossession  Boolean
+  receiverPhone     String
+  payer              PayerEnum      @default(SENDER)
+  description        String
+  priceOffer         Int
+  productTypeId      Int
+  pickupLocation     String
+  destinationAddress String
+  refrigerator       Boolean
+  User               User           @relation(fields: [userId], references: [id])
+  order              Order[]
+  notification       Notification[]
+  ProductType        ProductType    @relation(fields: [productTypeId], references: [id])
+
+  @@map("cargo")
+}
+
+model ProductType {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  created_at  DateTime @default(now())
+  cargo       Cargo[]
+
+  @@map("product_type")
+}
+
+model Notification {
+  id       Int     @id @default(autoincrement())
+  isRead   Boolean @default(false)
+  driverId Int
+  cargoId  Int
+  Driver   Driver  @relation(fields: [driverId], references: [id])
+  Cargo    Cargo   @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+model Reviews {
+  id         Int      @id @default(autoincrement())
+  driverId   Int
+  userId     Int
+  text       String
+  created_at DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
+  Driver     Driver   @relation(fields: [driverId], references: [id])
+
+  @@map("reviews")
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  status        PaymentStatus @default(FAILED)
+  createdAt     DateTime      @default(now())
+  amount        Int
+  orderId       Int
+  paymentMethod PaymentMethod @default(CASH)
+  Order         Order         @relation(fields: [orderId], references: [id])
+
+  @@map("payment")
+}
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  cargoId     Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  price       Float
+  isActive    Boolean
+  transportId Int
+  driverId    Int
+  User        User      @relation(fields: [userId], references: [id])
+  payment     Payment[]
+  Driver      Driver    @relation(fields: [driverId], references: [id])
+  Cargo       Cargo     @relation(fields: [cargoId], references: [id])
+  Transport   Transport @relation(fields: [transportId], references: [id])
+
+  @@map("order")
+}
+
+model TransportDriver {
+  id                Int       @id @default(autoincrement())
+  driverId          Int
+  transportId       Int
+  power_of_attorney String
+  Driver            Driver    @relation(fields: [driverId], references: [id])
+  Transport         Transport @relation(fields: [transportId], references: [id])
+
+  @@map("transportDriver")
+}
+
+model Rating {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  driverId   Int
+  score      Float
+  created_at DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
+  Driver     Driver   @relation(fields: [driverId], references: [id])
+
+  @@map("raiting")
+}
+
+model Transport {
+  id                     Int               @id @default(autoincrement())
+  driverId               Int
+  transportTypeId        Int
+  weight                 Float
+  dimensions             Float
+  brand                  String
+  transportNumber        String
+  years                  String
+  img                    String
+  color                  String
+  technicalPassportFront String
+  technicalPassportBack  String
+  technicalSeriaNumber   String
+  transportDriver        TransportDriver[]
+  order                  Order[]
+  TransportType          TransportType     @relation(fields: [transportTypeId], references: [id])
+
+  @@map("transport")
+}
+
+model TransportType {
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String
+  refrigerator Boolean
+  transport    Transport[]
+
+  @@map("transport_type")
+}
