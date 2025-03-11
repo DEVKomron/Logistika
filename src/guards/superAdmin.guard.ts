@@ -12,7 +12,7 @@ export class SuperAdminGuard implements CanActivate {
 
         const req = context.switchToHttp().getRequest();
 
-        if(!req.admin.superAdmin) throw new ForbiddenException()
+        if(req.role !== "superAdmin") throw new ForbiddenException()
         
         return true
     }

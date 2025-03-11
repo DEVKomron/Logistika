@@ -6,7 +6,7 @@ import { CookieGetter } from 'src/decorators/cookie-getter.decorator';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserSignInDto } from 'src/user/dto/sign_in-user.dto';
 import { AdminCreatorGuard } from 'src/guards/admin.creator.guard';
-import { SuperAdminGuard } from 'src/guards/superAdmin.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -50,7 +50,7 @@ export class AuthController {
   
   @ApiOperation({ summary: "Yangi admin ro'yxatdan o'tkazish" })
   @Post('admin/sign-up')
-  @UseGuards(AdminCreatorGuard, SuperAdminGuard)
+  @UseGuards(AdminCreatorGuard)
   signUpAdmin(@Body() createAdminDto: CreateUserDto) {
     
     return this.authService.adminSignUp(createAdminDto)

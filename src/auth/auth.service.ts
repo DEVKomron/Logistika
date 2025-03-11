@@ -123,7 +123,7 @@ export class AuthService {
         res.clearCookie("refresh_token");
 
         const response = {
-            message: "User logged out successfully",
+            message:`${userData.role} logged out successfully`,
         };
         return response;
     }
