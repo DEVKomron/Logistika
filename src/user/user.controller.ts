@@ -21,7 +21,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminCreatorGuard)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminCreatorGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

@@ -14,7 +14,7 @@ export class TransportService {
   }
 
   findAll() {
-    return this.prismaService.transport.findMany();
+    return this.prismaService.transport.findMany({include:{TransportType:true, transportDriver:true}});
   }
 
   findOne(id: number) {

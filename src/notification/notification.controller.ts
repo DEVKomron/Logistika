@@ -3,6 +3,7 @@ import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { AdminGuard } from '../guards/admin.guard';
+import { AdminCreatorGuard } from 'src/guards/admin.creator.guard';
 
 
 @Controller('notification')
@@ -10,13 +11,13 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @Post()
-  @UseGuards(AdminGuard)  
+  @UseGuards(AdminCreatorGuard)  
   create(@Body() createNotificationDto: CreateNotificationDto) {
     return this.notificationService.create(createNotificationDto);
   }
 
   @Get()
-  @UseGuards(AdminGuard)  
+  @UseGuards(AdminCreatorGuard)  
   findAll() {
     return this.notificationService.findAll();
   }
@@ -27,7 +28,7 @@ export class NotificationController {
   }
 
   @Patch(':id')
-  @UseGuards(AdminGuard)  
+  @UseGuards(AdminCreatorGuard)  
   update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
     return this.notificationService.update(+id, updateNotificationDto);
   }

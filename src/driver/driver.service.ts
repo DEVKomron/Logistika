@@ -79,7 +79,7 @@ export class DriverService {
   }
 
   async findAll() {
-    return this.prisma.driver.findMany({ include: { User: true } });
+    return this.prisma.driver.findMany({ include: { User: true, raiting: true } });
   }
 
   async findOne(id: number) {

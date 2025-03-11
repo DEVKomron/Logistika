@@ -39,23 +39,23 @@ enum PaymentMethod {
 }
 
 model User {
-  id                   Int         @id @default(autoincrement())
+  id                   Int       @id @default(autoincrement())
   phone_number         String
   first_name           String
   last_name            String
-  email                String      @unique
+  email                String    @unique
   tg_link              String
   is_active            Boolean
-  role                 Role?       @default(user)
+  role                 Role?     @default(user)
   hashed_password      String
   hashed_refresh_token String?
-  created_at           DateTime    @default(now())
+  created_at           DateTime  @default(now())
   driver               Driver[]
   cargo                Cargo[]
   raiting              Rating[]
   order                Order[]
   reviews              Reviews[]
-  payment              PayerEnum[]
+  payment              Payment[]
 
   @@map("user")
 }
@@ -74,8 +74,8 @@ model Driver {
   technical_passport_front String
   technical_passport_back  String
   created_at               DateTime          @default(now())
-  activation_link Boolean  @default(false)
-   link        String? 
+  activation_link          Boolean           @default(false)
+  link                     String?
   User                     User              @relation(fields: [userId], references: [id])
   notification             Notification[]
   rewiews                  Reviews[]
@@ -94,7 +94,7 @@ model Cargo {
   price              Float
   roundTrip          Boolean
   partialPossession  Boolean
-  receiverPhone     String
+  receiverPhone      String
   payer              PayerEnum      @default(SENDER)
   description        String
   priceOffer         Int
@@ -152,6 +152,7 @@ model Payment {
   orderId       Int
   paymentMethod PaymentMethod @default(CASH)
   Order         Order         @relation(fields: [orderId], references: [id])
+  User          User          @relation(fields: [userId], references: [id])
 
   @@map("payment")
 }

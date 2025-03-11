@@ -4,19 +4,19 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { UserGuard } from 'src/guards/user.guard';
 import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminCreatorGuard } from 'src/guards/admin.creator.guard';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  @UseGuards(UserGuard)  
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
   }
 
   @Get()
-  @UseGuards(AdminGuard)  
+  @UseGuards(AdminCreatorGuard)  
   findAll() {
     return this.ordersService.findAll();
   }
@@ -27,13 +27,12 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  @UseGuards(UserGuard) 
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.update(+id, updateOrderDto);
   }
 
   @Delete(':id')
-  @UseGuards(UserGuard, AdminGuard) 
+  @UseGuards(AdminCreatorGuard) 
   remove(@Param('id') id: string) {
     return this.ordersService.remove(+id);
   }

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { TransportService } from './transport.service';
 import { CreateTransportDto } from './dto/create-transport.dto';
 import { UpdateTransportDto } from './dto/update-transport.dto';
+import { AdminCreatorGuard } from 'src/guards/admin.creator.guard';
 
 @Controller('transport')
 export class TransportController {
@@ -28,6 +29,7 @@ export class TransportController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminCreatorGuard)
   remove(@Param('id') id: string) {
     return this.transportService.remove(+id);
   }

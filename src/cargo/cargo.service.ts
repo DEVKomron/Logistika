@@ -14,7 +14,7 @@ export class CargoService {
   }
 
   async findAll() {
-    return await this.prisma.cargo.findMany();
+    return await this.prisma.cargo.findMany({ include: { User: true } });
   }
 
   async findOne(id: number) {

@@ -3,6 +3,7 @@ import { TransportDriverService } from './transport_driver.service';
 import { CreateTransportDriverDto } from './dto/create-transport_driver.dto';
 import { UpdateTransportDriverDto } from './dto/update-transport_driver.dto';
 import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminCreatorGuard } from 'src/guards/admin.creator.guard';
 
 @Controller('transport-driver')
 export class TransportDriverController {
@@ -14,7 +15,7 @@ export class TransportDriverController {
   }
 
   @Get()
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminCreatorGuard)
   findAll() {
     return this.transportDriverService.findAll();
   }
@@ -30,7 +31,7 @@ export class TransportDriverController {
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminCreatorGuard)
   remove(@Param('id') id: string) {
     return this.transportDriverService.remove(+id);
   }

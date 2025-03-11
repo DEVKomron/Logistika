@@ -24,7 +24,7 @@ async create(createUserDto: CreateUserDto) {
 }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({include: {cargo:true, order:true, payment:true}});
   }
 
   findOne(id: number) {

@@ -13,7 +13,7 @@ export class PaymentService {
   }
 
   findAll() {
-    return this.prismaService.payment.findMany();
+    return this.prismaService.payment.findMany({include: {User:true}});
   }
 
   findOne(id: number) {
