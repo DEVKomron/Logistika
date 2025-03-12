@@ -36,7 +36,7 @@ async create(createUserDto: CreateUserDto) {
   });
 
 
-  const activationUrl = `3.78.122.117/user/activate/${activationLink}`;
+  const activationUrl = `3.78.122.117:3030/user/activate/${activationLink}`;
   await this.mailService.sendActivationEmail(user.email, activationUrl);
 
   return {
