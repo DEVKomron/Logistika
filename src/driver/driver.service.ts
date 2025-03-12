@@ -38,7 +38,7 @@ export class DriverService {
       },
     });
 
-    const activationUrl = `3.78.122.117/driver/activate/${activationLink}`;
+    const activationUrl = `3.78.122.117:3030/driver/activate/${activationLink}`;
     await this.mailService.sendActivationEmail(user.email, activationUrl);
 
     return {
