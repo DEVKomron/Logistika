@@ -28,17 +28,14 @@ export class CreateUserDto {
   @IsString()
   tg_link: string;
 
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  is_active: boolean;
-
-  @ApiProperty({ example: 'user' , default: 'user' })
-  role?:Role;
-
   @ApiProperty({ example: 'parol' })
   @IsNotEmpty()
   @IsString()
   hashed_password: string;
+  
+  
+  is_active: boolean;
+  role?:Role;
 }
 
 

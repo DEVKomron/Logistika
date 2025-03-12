@@ -47,6 +47,7 @@ model User {
   tg_link              String
   is_active            Boolean
   role                 Role?     @default(user)
+  link      String?
   hashed_password      String
   hashed_refresh_token String?
   created_at           DateTime  @default(now())
@@ -201,7 +202,6 @@ model Rating {
 
 model Transport {
   id                     Int               @id @default(autoincrement())
-  driverId               Int
   transportTypeId        Int
   weight                 Float
   dimensions             Float

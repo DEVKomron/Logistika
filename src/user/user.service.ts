@@ -3,24 +3,76 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
+
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly mailService: MailService,
+    
 ) {}
 
+
 async create(createUserDto: CreateUserDto) {
-  const { hashed_password,  ...data } = createUserDto;
+  const { hashed_password, ...userData } = createUserDto;
+
   if (!hashed_password) {
-      throw new BadRequestException("parollar mos emas");
+    throw new BadRequestException('Password is required');
   }
 
   const hashedPassword = await bcrypt.hash(hashed_password, 7);
+  const activationLink = uuidv4(); 
 
-  return this.prismaService.user.create({
-      data: { ...data, hashed_password: hashedPassword },
+  const user = await this.prismaService.user.create({
+    data: {
+      ...userData,
+      hashed_password: hashedPassword,
+      link:activationLink,
+      is_active: false 
+    },
   });
+
+
+  const activationUrl = `http://3.78.122.117/user/activate/${activationLink}`;
+  await this.mailService.sendActivationEmail(user.email, activationUrl);
+
+  return {
+    message: 'User created. Activation email sent.',
+    userId: user.id,
+  };
+}
+
+async activate(link: string) {
+  console.log("hello2");
+
+  if (!link) {
+    throw new BadRequestException("Activation link not found");
+  }
+  const driver = await this.prismaService.user.findFirst({
+    where: {
+      link,
+      is_active: false,
+    },
+  });
+  
+  if (!driver) {
+    throw new BadRequestException("driver already activates or link is invalid");
+  }
+
+  const updateDriver = await this.prismaService.user.update({
+    where: { id: driver.id },
+    data: { is_active: true },
+  });
+
+  const response = {
+    message: "User activated successfully",
+    driver: updateDriver.is_active,
+  };
+
+  return response;
 }
 
   findAll() {

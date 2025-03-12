@@ -34,9 +34,6 @@ export class CreateDriverDto {
   @IsString()
   region: string;
 
-  @ApiProperty({ example: false, description: 'Verification status' })
-  @IsNotEmpty()
-  @IsBoolean()
   is_verified: boolean;
 
   @ApiProperty({ example: 'https://example.com/license-front.jpg', description: 'Driver license front image' })

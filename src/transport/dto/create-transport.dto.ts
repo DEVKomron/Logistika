@@ -3,13 +3,6 @@ import { IsInt, IsString, IsNumber, IsDate, IsUrl, Length } from 'class-validato
 
 export class CreateTransportDto {
   @ApiProperty({
-    example: 1,
-    description: 'Haydovchi ID si',
-  })
-  @IsInt()
-  driverId: number;
-
-  @ApiProperty({
     example: 2,
     description: 'Transport turi ID si',
   })

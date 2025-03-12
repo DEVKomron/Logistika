@@ -55,7 +55,7 @@ export class AuthService {
         const response = {
             message:
                 "Tabriklayman tizimga qo'shildingin",
-            userId: newUser.id,
+            userId: newUser.userId,
         };
 
         return response;
@@ -139,7 +139,7 @@ export class AuthService {
     
             return {
                 message: "Tabriklayman, admin sifatida tizimga qo'shildingiz",
-                adminId: newAdmin.id
+                adminId: newAdmin.userId
             };
         }
     
